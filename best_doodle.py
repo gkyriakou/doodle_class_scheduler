@@ -47,9 +47,9 @@ def find_max(full_list, av_slots, settled_students, beginning = 0, candidates = 
     num_of_students = len(full_list)               # the number of different possible time slots, that students vote over
     num_of_slots = len(full_list[0])         # all the slots have the same number of students, we just pick the first one, cause worst case scenario there is at least one student
 
-    print "num_of_slots", num_of_slots
-    print "num_of_students", num_of_students
-    print "settled_students in entrance", settled_students
+    #print "num_of_slots", num_of_slots
+    #print "num_of_students", num_of_students
+    #print "settled_students in entrance", settled_students
 
     if av_slots > num_of_slots:
         sys.exit("you cannot provide more slots than the number of slots! TERMINATING")
@@ -75,9 +75,9 @@ def find_max(full_list, av_slots, settled_students, beginning = 0, candidates = 
                     ss[k] = 1
                 else:
                     #print "didn't get this one"
-                    print k
-                    print ss[k]
-                    print settled_students[k]
+                    #print k
+                    #print ss[k]
+                    #print settled_students[k]
                     ss[k] = settled_students[k]
 
             # there is a chance of never entering that if and leaving the slot at -1. Is there theoretically improvement after that?
@@ -90,19 +90,19 @@ def find_max(full_list, av_slots, settled_students, beginning = 0, candidates = 
 
             if av_slots > 1 and (j+av_slots) <= num_of_slots :  # we have more av_slots to use
                 if slot == -1:
-                    print "check if there is improvement after this point. picking a non-improving slot"
+                    #print "check if there is improvement after this point. picking a non-improving slot"
                     slot = beginning
-                print "calling recersion and the settled_student list is", max_ss
-                print "av_slots-1", av_slots-1, "beginning+1", j+1, "candidates", candidates, "cur_score", cur_score+max_avd, "combination", combination+(slot,)
+                #print "calling recersion and the settled_student list is", max_ss
+                #print "av_slots-1", av_slots-1, "beginning+1", j+1, "candidates", candidates, "cur_score", cur_score+max_avd, "combination", combination+(slot,)
                 candidates = find_max(full_list, av_slots-1, copy.copy(max_ss), j+1, candidates, cur_score+max_avd, combination+(slot,))
-                print "after coming back i remember that my max_ss is", max_ss
+                #print "after coming back i remember that my max_ss is", max_ss
 
         # execute that only if you are the last av_slot    
         if av_slots == 1:
             if slot == -1:
                 print "cannot see how it may reach here"
-            print "reached the end"
-            print "good state is", combination+(slot,)
+            #print "reached the end"
+            #print "good state is", combination+(slot,)
             candidates[combination+(slot,)] = cur_score + max_avd       # register the score in a dictionary
 
     return candidates
@@ -147,11 +147,11 @@ print "just one optimum solution:", max(choices_dictionary.iteritems(), key=oper
 """
 
 num_slots = int(raw_input("Enter how many slots do you want to have: "))
-print "this is your solution"
+#print "this is your solution"
 print "slot-combination : score"
 choices_dictionary = find_max(fraidy_list, num_slots, [0]*len(fraidy_list), beginning = 0, candidates = {}, cur_score = 0, combination = ())
-print choices_dictionary
-print "just one out of all optimum solution:", max(choices_dictionary.iteritems(), key=operator.itemgetter(1))
+#print choices_dictionary
+#print "just one out of all optimum solution:", max(choices_dictionary.iteritems(), key=operator.itemgetter(1))
 maxes = {}
 for i in choices_dictionary:
     if choices_dictionary[i] == max(choices_dictionary.iteritems(), key=operator.itemgetter(1))[1]:
