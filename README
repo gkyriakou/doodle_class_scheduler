@@ -1,0 +1,8 @@
+The scenario:
+You want to offer a class/event/activity and you have way too many people and way too many slots. Therefore you decide to create a doodle to solve all this out.
+
+The problem:
+There is not a single slot that contains all the users. No biggy. You are willing to offer multiple slots. However, you want to offer the minimum amount of slots that covers all the users.
+
+The solution:
+Export the doodle in a CSV file and run this program. Voila!
