@@ -7,18 +7,25 @@ import sys
 
 d = {}
 fraidy_list = []
-with open('doodle.csv', 'rb') as csvfile:
-    spamreader = csv.reader(csvfile, delimiter=' ', quotechar='"')
+
+my_file = raw_input("Please provide the csv filename: ")
+
+with open(my_file, 'rb') as csvfile:
+    spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
     for row in spamreader:
         bef_split = ','.join(row)
         #print bef_split
         after_split = bef_split.split(',')
-        #print len(afte_split)
+        #print len(after_split)
         fraidy_list.append(after_split[1:])     # strip the name
         n = row.pop(0)
 
-    fraidy_list.pop()                           # remove the count
-    # print fraidy_list                         # print the "OK" and empty string list
+    if fraidy_list[len(fraidy_list)-1][len(fraidy_list[len(fraidy_list)-1])-1].isdigit():
+        fraidy_list.pop()                   # remove the last row which is the count
+        print "The last row contained the counts and was removed."
+
+    #print fraidy_list                         # print the "OK" and empty string list
+    
     # translate into '1':OK and '0'
     for v in range(len(fraidy_list)):
         for m in range(len(fraidy_list[v])):
@@ -26,14 +33,17 @@ with open('doodle.csv', 'rb') as csvfile:
                 fraidy_list[v][m] = 0
             else:
                 fraidy_list[v][m] = 1
+    #print fraidy_list                         # print the '1', '0' list with names
 
-    # print fraidy_list                         # print the '1', '0' list
+    #for v in range(len(fraidy_list)):
+    #    print len(fraidy_list[v])
 
 # lets assume that we get a list of list. each encapsulated list contains a 0 if the student is not available and a '1' if the student is available
 
 def find_max(full_list, av_slots, settled_students, beginning = 0, candidates = {}, cur_score = 0, combination = ()):
     """
     returns the av_slots slots that contain the maximum number of available students
+    a '-1' in the slots index means that this slot actually offer 0 benefit and is not required
 
     full_list           --- the list with the students availability for all slots: '1'=> students is availabe, '0'=> not available
     av_slots            --- how many different time slots can we use
@@ -66,9 +76,10 @@ def find_max(full_list, av_slots, settled_students, beginning = 0, candidates = 
             #ss = settled_students              # store the settled students #CAREFULL THIS IS A SHALLOW COPY
             ss = copy.copy(settled_students)
             #print "settled_students", settled_students
+            #print "full_list", full_list, full_list[23]
             #print "j",j
             for k in range(num_of_students):
-                #print "k",k
+                #print "k",k,"j",j
                 if full_list[k][j] == 1 and settled_students[k]!=1:     # this students has not be settled yet
                     #print "got one more"
                     tmp += 1
@@ -80,7 +91,7 @@ def find_max(full_list, av_slots, settled_students, beginning = 0, candidates = 
                     #print settled_students[k]
                     ss[k] = settled_students[k]
 
-            # there is a chance of never entering that if and leaving the slot at -1. Is there theoretically improvement after that?
+            # there is a chance of never entering this "if" (if the current slot offers no improvement) and thus leaving the 'slot' at -1. Is there theoretically improvement after that?
             if tmp > max_avd:
                     max_avd = tmp
                     slot = j                                            # note down the most 'profitable' day of the current av_slot
@@ -91,7 +102,8 @@ def find_max(full_list, av_slots, settled_students, beginning = 0, candidates = 
             if av_slots > 1 and (j+av_slots) <= num_of_slots :  # we have more av_slots to use
                 if slot == -1:
                     #print "check if there is improvement after this point. picking a non-improving slot"
-                    slot = beginning
+                    #slot = beginning
+                    pass
                 #print "calling recersion and the settled_student list is", max_ss
                 #print "av_slots-1", av_slots-1, "beginning+1", j+1, "candidates", candidates, "cur_score", cur_score+max_avd, "combination", combination+(slot,)
                 candidates = find_max(full_list, av_slots-1, copy.copy(max_ss), j+1, candidates, cur_score+max_avd, combination+(slot,))
@@ -100,7 +112,8 @@ def find_max(full_list, av_slots, settled_students, beginning = 0, candidates = 
         # execute that only if you are the last av_slot    
         if av_slots == 1:
             if slot == -1:
-                print "cannot see how it may reach here"
+                #print "this is the last slot and offered no improvement","beginning",beginning,"av_slots",av_slots,"ss",ss
+                pass
             #print "reached the end"
             #print "good state is", combination+(slot,)
             candidates[combination+(slot,)] = cur_score + max_avd       # register the score in a dictionary
@@ -157,6 +170,7 @@ for i in choices_dictionary:
     if choices_dictionary[i] == max(choices_dictionary.iteritems(), key=operator.itemgetter(1))[1]:
         maxes[i] = max(choices_dictionary.iteritems(), key=operator.itemgetter(1))[1]
 
+print "A '-1' in the slots index means that this slot actually offers '0' benefit and it is not required. Try reducing the amount of offered slots."
 print maxes
 
 
